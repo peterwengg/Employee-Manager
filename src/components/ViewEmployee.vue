@@ -8,6 +8,12 @@
         </ul>
         <router-link to="/" class="btn grey">Back</router-link>
         <button @click="deleteEmployee" class="btn red">Delete</button>
+        <div class="fixed-action-btn">
+            <router-link v-bind:to="{name: 'edit-employee', params: {employee_id: employee_id}}" 
+            class="btn-floating btn-large red">
+                <i class="fa fa-pencil"></i>
+            </router-link>
+        </div>
     </div>
 </template>
 
@@ -23,6 +29,8 @@
                 position: null
             }
         },
+
+        //Needed to fetch the data
         beforeRouteEnter (to, from, next){
             db.collection('employees').where('employee_id', '==', to.params.employee_id).get()
             .then(querySnapshot => {
@@ -42,6 +50,8 @@
         },
 
         //We can use the watch option to trigger / change something whenever a reactive property changes
+        //For this case, after beforeRouteEnter is used to fetch data, page does not refresh and the employee_id will
+        //not change in the component state. Thus need watcher to look out for route param change and then change ID
         watch: {
             '$route' : 'fetchData' //Setting route to a method called fetchData
         },
